@@ -1,0 +1,8 @@
+flask
+flask-cors
+pandas
+stanza
+torch
+transformers
+matplotlib
+scikit-learn
