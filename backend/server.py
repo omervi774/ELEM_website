@@ -3,18 +3,15 @@ from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import pandas as pd
 from io import BytesIO
-from annonimization import anonymize_text
 from io import BytesIO
-import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
-from bert_embdding import get_bert_embedding
-import plotly.graph_objects as go
 from train_model import train
+from pca_analysis import pca
+# import matplotlib.pyplot as plt
+# from sklearn.decomposition import PCA
+# from bert_embdding import get_bert_embedding
+# import plotly.graph_objects as go
+# from annonimization import anonymize_text
 
-label_map = {
-    'חומרים ממכרים': 0,
-    'בדידות': 1
-}
 
 app = Flask(__name__)
 CORS(app)  # Allow React (running on different port) to access Flask
@@ -27,18 +24,8 @@ def predict():
 
     try:
         df = pd.read_csv(file)
-        df['label'] = df['תופעות'].map(label_map)
-        # df["anonymized_text"] = df["text"].apply(lambda x: anonymize_text(x)[0])
-        # df["embedding"] = df["text"].apply(lambda x: get_bert_embedding(str(x)))
-
-       # BERT embeddings as features
-        X = pd.DataFrame(df["text"].apply(lambda x: get_bert_embedding(str(x))).tolist())  # shape: (N, 768)
-
-        # Binary labels
-        y = df['label'].values
-        model = train(X, y)
-
-        
+        model = train(df)
+        # pca(df)
 
        # Save to memory
         output = BytesIO()
